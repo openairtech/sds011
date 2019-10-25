@@ -26,7 +26,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/jacobsa/go-serial/serial"
+	"github.com/chmorgan/go-serial2/serial"
 )
 
 type command byte
