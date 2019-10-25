@@ -24,7 +24,8 @@ import (
 	"io"
 	"time"
 
-	log "github.com/golang/glog"
+	log "github.com/sirupsen/logrus"
+
 	"github.com/jacobsa/go-serial/serial"
 )
 
@@ -198,7 +199,7 @@ func (sensor *Sensor) send(cmd command, mod mode, data byte) error {
 	if err := binary.Write(b, binary.LittleEndian, makeRequest(cmd, mod, data)); err != nil {
 		return err
 	}
-	log.V(6).Infof("sending bytes: %#v", b.Bytes())
+	log.Debugf("sending bytes: %#v", b.Bytes())
 	_, err := sensor.rwc.Write(b.Bytes())
 	return err
 }
@@ -225,7 +226,7 @@ func (sensor *Sensor) receiveReply() (*response, error) {
 		if resp.IsReply() {
 			return resp, nil
 		}
-		log.V(6).Infof("received data, but not a reply: %#v", resp)
+		log.Debugf("received data, but not a reply: %#v", resp)
 	}
 	return nil, errors.New("no reply")
 
@@ -241,7 +242,7 @@ func (sensor *Sensor) ReportMode() (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	log.V(6).Infof("ReportMode response: %#v", data)
+	log.Debugf("ReportMode response: %#v", data)
 	return data.ReportMode() == reportModeActive, nil
 }
 
@@ -254,14 +255,14 @@ func (sensor *Sensor) MakeActive() error {
 	if err != nil {
 		return err
 	}
-	log.V(6).Infof("MakeActive: %#v", data)
+	log.Debugf("MakeActive: %#v", data)
 	return nil
 }
 
 // MakePassive stop the sensor from actively reporting its
 // measurements. You will need to send a Query command.
 func (sensor *Sensor) MakePassive() error {
-	log.V(6).Infof("make passive")
+	log.Debugf("make passive")
 	if err := sensor.send(commandReportMode, modeSet, reportModeQuery); err != nil {
 		return err
 	}
@@ -269,7 +270,7 @@ func (sensor *Sensor) MakePassive() error {
 	if err != nil {
 		return err
 	}
-	log.V(6).Infof("MakePassive response: %#v", data)
+	log.Debugf("MakePassive response: %#v", data)
 	return nil
 }
 
@@ -282,7 +283,7 @@ func (sensor *Sensor) DeviceID() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	log.V(6).Infof("DeviceID: %#v", data)
+	log.Debugf("DeviceID: %#v", data)
 	return data.DeviceID(), nil
 
 }
@@ -296,7 +297,7 @@ func (sensor *Sensor) Firmware() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	log.V(6).Infof("Firmare: %#v", data)
+	log.Debugf("Firmare: %#v", data)
 	return data.Firmware(), nil
 
 }
@@ -312,7 +313,7 @@ func (sensor *Sensor) Cycle() (uint8, error) {
 	if err != nil {
 		return 0, err
 	}
-	log.V(6).Infof("Cycle: %#v", data)
+	log.Debugf("Cycle: %#v", data)
 	return data.Cycle(), nil
 }
 
@@ -330,7 +331,7 @@ func (sensor *Sensor) SetCycle(value uint8) error {
 	if err != nil {
 		return err
 	}
-	log.V(6).Infof("SetCycle: %#v", data)
+	log.Debugf("SetCycle: %#v", data)
 	return nil
 }
 
@@ -351,7 +352,7 @@ func (sensor *Sensor) IsAwake() (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	log.V(6).Infof("IsAwake WorkState: %#v", data)
+	log.Debugf("IsAwake WorkState: %#v", data)
 	return data.WorkState() == workStateMeasuring, nil
 }
 
@@ -364,7 +365,7 @@ func (sensor *Sensor) Awake() error {
 	if err != nil {
 		return err
 	}
-	log.V(6).Infof("Awake WorkState: %#v", data)
+	log.Debugf("Awake WorkState: %#v", data)
 	return nil
 }
 
@@ -377,7 +378,7 @@ func (sensor *Sensor) Sleep() error {
 	if err != nil {
 		return err
 	}
-	log.V(6).Infof("WorkState: %#v", data)
+	log.Debugf("WorkState: %#v", data)
 	return nil
 }
 
@@ -419,6 +420,6 @@ func (sensor *Sensor) Get() (point *Point, err error) {
 	if err != nil {
 		return nil, err
 	}
-	log.V(6).Infof("Query data: %#v", data)
+	log.Debugf("Query data: %#v", data)
 	return &Point{PM25: data.PM25(), PM10: data.PM10(), Timestamp: time.Now()}, nil
 }

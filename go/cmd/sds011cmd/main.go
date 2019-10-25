@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"strconv"
 
-	log "github.com/golang/glog"
-	"github.com/ryszard/sds011/go/sds011"
+	log "github.com/sirupsen/logrus"
+
+	"github.com/openairtech/sds011/go/sds011"
 )
 
 var portPath = flag.String("port_path", "/dev/ttyUSB0", "serial port path")

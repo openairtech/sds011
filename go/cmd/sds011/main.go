@@ -24,7 +24,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/ryszard/sds011/go/sds011"
+	"github.com/openairtech/sds011/go/sds011"
 )
 
 var (
