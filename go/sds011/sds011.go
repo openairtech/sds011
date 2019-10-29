@@ -26,7 +26,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/chmorgan/go-serial2/serial"
+	"github.com/NotifAi/serial"
 )
 
 type command byte
@@ -391,15 +391,10 @@ func (sensor *Sensor) Close() {
 // the path was provided. It is the responsibility of the caller to
 // close the sensor.
 func New(portPath string) (*Sensor, error) {
-	options := serial.OpenOptions{
-		PortName:        portPath,
-		BaudRate:        9600,
-		DataBits:        8,
-		StopBits:        1,
-		MinimumReadSize: 4,
-	}
-
-	port, err := serial.Open(options)
+	port, err := serial.OpenPort(serial.Config{
+		Name: portPath,
+		Baud: 9600,
+	})
 	if err != nil {
 		return nil, err
 	}
